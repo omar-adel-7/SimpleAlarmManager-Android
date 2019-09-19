@@ -62,7 +62,7 @@ public class BootAndTimeChangeReceiver extends BroadcastReceiver {
       }
 
     }
-}
+
 ```
 Register BootAndTimeChangeReceiver on Manifest as follows.
 
