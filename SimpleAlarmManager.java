@@ -1,6 +1,5 @@
 package com.alarm;
-
-
+ 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -119,8 +118,8 @@ public class SimpleAlarmManager {
 
 
 
-    private static boolean checkIfTagOfAlarmFound(Context context, String tagOfAlarm) {
-         Set<String> set = SimpleAlarmManager.getAllStoredTags(context);
+    public static boolean checkIfTagOfAlarmFound(Context context, String tagOfAlarm) {
+        Set<String> set = SimpleAlarmManager.getAllStoredTags(context);
         for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
             String tag = it.next();
             if (tag.contains(tagOfAlarm)) {
@@ -130,6 +129,16 @@ public class SimpleAlarmManager {
         return false;
     }
 
+    public static String getTagOfAlarmIfFound(Context context, String tagOfAlarm) {
+        Set<String> set = SimpleAlarmManager.getAllStoredTags(context);
+        for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
+            String tag = it.next();
+            if (tag.contains(tagOfAlarm)) {
+                return tag;
+            }
+        }
+        return "";
+    }
 
     private static void store(Context context, String tagOfAlarm,
                               long interval, int year, int month, int dayOfMonth
@@ -137,7 +146,7 @@ public class SimpleAlarmManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences(AlarmManagerKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.contains(TagsOfAlarmsKey)) {
-            Set<String> set = sharedPreferences.getStringSet(TagsOfAlarmsKey, new HashSet<>());
+            Set<String> set = sharedPreferences.getStringSet(TagsOfAlarmsKey, new HashSet<String>());
             if (set != null && !set.isEmpty()) {
                 set.add(tagOfAlarm);
                 editor.putStringSet(TagsOfAlarmsKey, set);
@@ -175,35 +184,51 @@ public class SimpleAlarmManager {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (pendingIntent != null) {
             AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            /// alarmMgr.cancel(pendingIntent);
-            if (Build.VERSION.SDK_INT >= 23) {
-                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        calendar.getTimeInMillis(), pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= 19) {
-                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+             //alarmMgr.cancel(pendingIntent);
+
+//            if (Build.VERSION.SDK_INT >= 23) {
+//                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+//                        calendar.getTimeInMillis(), pendingIntent);
+//            } else if (Build.VERSION.SDK_INT >= 19) {
+//                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//            } else {
+//                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+             }
+            else
+            {
+                if (Build.VERSION.SDK_INT >= 19) {
+                    alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
             }
+
+
         }
+
     }
 
     public static void removeTagOfAlarm(Context context, String tagOfAlarm) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(AlarmManagerKey, Context.MODE_PRIVATE);
-            Set<String> set = SimpleAlarmManager.getAllStoredTags(context);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(AlarmManagerKey, Context.MODE_PRIVATE);
+        Set<String> set = SimpleAlarmManager.getAllStoredTags(context);
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
-                String tag = it.next();
-                if (tagOfAlarm.equals(tag)) {
-                    if (set != null && !set.isEmpty()) {
-                        set.remove(tagOfAlarm);
-                        editor.putStringSet(TagsOfAlarmsKey, set);
-                        editor.apply();
-                    }
-                    break;
+        for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
+            String tag = it.next();
+            if (tagOfAlarm.equals(tag)) {
+                if (set != null && !set.isEmpty()) {
+                    set.remove(tagOfAlarm);
+                    editor.putStringSet(TagsOfAlarmsKey, set);
+                    editor.apply();
                 }
+                break;
             }
+        }
 
     }
 
@@ -391,7 +416,7 @@ public class SimpleAlarmManager {
 
     public static Set<String> getAllStoredTags(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(AlarmManagerKey, Context.MODE_PRIVATE);
-        return sharedPreferences.getStringSet(TagsOfAlarmsKey, new HashSet<>());
+        return sharedPreferences.getStringSet(TagsOfAlarmsKey, new HashSet<String>());
     }
 
 
@@ -400,8 +425,6 @@ public class SimpleAlarmManager {
     }
 
     public static BigInteger stringToInteger(String text) {
-        //todo
-//        Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference
         BigInteger bigInt = new BigInteger(text.getBytes());
         return bigInt;
     }
