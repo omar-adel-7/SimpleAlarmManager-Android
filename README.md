@@ -117,7 +117,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         if(!newTagOfAlarm.contains(OneAlarmShownKey) && !newTagOfAlarm.isEmpty())
         {
             SimpleAlarmManager.updateTagOfOneAlarm(context,tagOfAlarm);
-            Log.e("AlarmReceiverOnReceive","AlarmReceiverOnReceive");
+           // Log.e("AlarmReceiverOnReceive","AlarmReceiverOnReceive");
         }
 
     }
