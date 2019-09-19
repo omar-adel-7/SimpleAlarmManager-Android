@@ -83,6 +83,17 @@ Register BootAndTimeChangeReceiver on Manifest as follows.
         </receiver>
 ```
 
+Register AlarmReceiver on Manifest as follows.
+
+``` xml your reciever here
+    <receiver
+            android:name="modules.alarm.receivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false"
+             >    
+        </receiver>
+```
+
 Add onBoot Permission
 ```xml
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -96,11 +107,18 @@ Add onBoot Permission
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-          SimpleAlarmManager.refreshAndScheduleNext(context);
+     
+     SimpleAlarmManager.refreshAndScheduleNext(context);
 
         String tagOfAlarm = intent.getStringExtra(SimpleAlarmManager.TagOfAlarmIntentKey);
 
-        SimpleAlarmManager.updateTagOfOneAlarm(context,tagOfAlarm);
+        String newTagOfAlarm = SimpleAlarmManager.getTagOfAlarmIfFound(context,tagOfAlarm);
+       
+        if(!newTagOfAlarm.contains(OneAlarmShownKey) && !newTagOfAlarm.isEmpty())
+        {
+            SimpleAlarmManager.updateTagOfOneAlarm(context,tagOfAlarm);
+            Log.e("AlarmReceiverOnReceive","AlarmReceiverOnReceive");
+        }
 
     }
 }
