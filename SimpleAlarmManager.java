@@ -186,26 +186,26 @@ public class SimpleAlarmManager {
             AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
              //alarmMgr.cancel(pendingIntent);
 
-//            if (Build.VERSION.SDK_INT >= 23) {
-//                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-//                        calendar.getTimeInMillis(), pendingIntent);
-//            } else if (Build.VERSION.SDK_INT >= 19) {
-//                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-//            } else {
-//                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-//            }
+           if (Build.VERSION.SDK_INT >= 23) {
+               alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                       calendar.getTimeInMillis(), pendingIntent);
+           } else if (Build.VERSION.SDK_INT >= 19) {
+               alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+           } else {
+               alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+           }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
-             }
-            else
-            {
-                if (Build.VERSION.SDK_INT >= 19) {
-                    alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
-            }
+//             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                 alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+//              }
+//             else
+//             {
+//                 if (Build.VERSION.SDK_INT >= 19) {
+//                     alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//                 } else {
+//                     alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//                 }
+//             }
 
 
         }
